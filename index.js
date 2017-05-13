@@ -1,5 +1,6 @@
 const http = require('http');
-const db = require('app/config/config.js');
+const sequelize = require('./app/config/db-config.js');
+var user = require('./app/user/user.js')
 const hostname = '127.0.0.1';
 const port = 3000;
 
@@ -13,9 +14,11 @@ server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
 
-db.query('SELECT * from test1 ', function(err, rows, fields) {
-  if (!err)
-    console.log(rows);
-  else
-    console.log('Error while performing Query.');
-});
+sequelize
+  .authenticate()
+  .then(function(err) {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(function (err) {
+    console.log('Unable to connect to the database:', err);
+  });
