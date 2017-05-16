@@ -1,5 +1,6 @@
 var sequelize = require('./app/config/db-config.js');
 var users = require('./app/user/route.js');
+var bookings = require('./app/booking/route.js');
 
 var express = require('express');
 var app = express();
@@ -11,3 +12,4 @@ app.listen(port, function() {
 })
 
 app.use('/users', users);
+app.use('/bookings', bookings);

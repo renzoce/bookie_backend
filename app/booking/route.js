@@ -1,4 +1,3 @@
-var User = require('./service.js')
 var express = require('express');
 var router = express.Router();
 
@@ -8,9 +7,7 @@ router.use(function timeLog(req, res, next) {
 });
 
 router.get('/', function(req, res) {
-  User.getUsers().then(users => {
-    res.send(users);
-  });
+  res.send("Bookings");
 });
 
 module.exports = router;
