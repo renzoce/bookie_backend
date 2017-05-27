@@ -5,6 +5,11 @@ module.exports = function(sequelize, DataTypes) {
 //Agregar tokens de login (fb, google, etc)
 
   var Client = sequelize.define('Client', {
+    userId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
     googleAcc: {
       type: DataTypes.STRING
     }
@@ -12,7 +17,7 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         Client.belongsTo(models.User, {
-          //foreignKey: 'userId'
+          foreignKey: 'userId'
         })
       }
     }

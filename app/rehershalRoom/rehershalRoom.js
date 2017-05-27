@@ -18,10 +18,9 @@ module.exports = function(sequelize, DataTypes) {
     latitude: {
       type: DataTypes.STRING
     },
-    longitude: {s.DATE
+    longitude: {
+      type: DataTypes.STRING
     },
-    phone:
-    }
     phone: {
       type: DataTypes.STRING
     },
