@@ -1,4 +1,4 @@
-var Booking = require('./service.js')
+var aComment = require('./service.js')
 var express = require('express');
 var router = express.Router();
 
@@ -8,8 +8,8 @@ router.use(function timeLog(req, res, next) {
 });
 
 router.get('/', function(req, res) {
-  User.getBookings().then(bookings => {
-    res.send(bookings);
+  aComment.getComments().then(comments => {
+    res.send(comments);
   });
 });
 
