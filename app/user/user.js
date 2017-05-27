@@ -15,14 +15,6 @@ module.exports = function(sequelize, DataTypes) {
     isOwner: {
       type: DataTypes.BOOLEAN
     }
-  }, {
-    classMethods: {
-      associate: function(models) {
-        User.hasMany(models.Booking, {
-          foreignKey: 'userId'
-        })
-      }
-    }
   });
 
   return User;

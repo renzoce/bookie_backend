@@ -1,7 +1,7 @@
 module.exports = function(sequelize, DataTypes) {
 
   var Room = sequelize.define('Room', {
-      roomId: {
+    roomId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
@@ -16,7 +16,10 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         Room.belongsTo(models.Owner, {
-        //  foreignKey: 'userId'
+          foreignKey: 'userId'
+        }),
+        Room.hasMany(models.RehearsalRoom, {
+            foreignKey: 'roomId'
         })
       }
     }

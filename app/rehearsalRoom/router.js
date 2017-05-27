@@ -1,4 +1,4 @@
-var RehershalRoom = require('./service.js')
+var RehearsalRoom = require('./service.js')
 var express = require('express');
 var router = express.Router();
 
@@ -8,8 +8,8 @@ router.use(function timeLog(req, res, next) {
 });
 
 router.get('/', function(req, res) {
-  RehershalRoom.getRehershalRooms().then(rehershalRooms => {
-    res.send(rehershalRooms);
+  RehearsalRoom.getRehearsalRoom().then(rehearsalRoom => {
+    res.send(rehearsalRoom);
   });
 });
 

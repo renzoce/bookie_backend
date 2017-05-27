@@ -22,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        Booking.belongsTo(models.User, {
+        Booking.belongsTo(models.Client, {
           foreignKey: 'userId'
         });
       }
