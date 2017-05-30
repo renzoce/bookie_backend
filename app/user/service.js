@@ -1,8 +1,8 @@
-var User = require('./user')
+var db = require('../config/db-config')
 
 module.exports = {
   getUsers: function() {
-    return User.findAll();
+    return db.User.findAll();
   },
 
   getUser: function() {

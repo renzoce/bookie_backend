@@ -1,8 +1,8 @@
-var Booking = require('./booking')
+var db = require('../config/db-config')
 
 module.exports = {
   getBookings: function() {
-    return Booking.findAll();
+    return db.Booking.findAll();
   },
 
   getBooking: function() {

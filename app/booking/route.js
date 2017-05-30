@@ -8,7 +8,7 @@ router.use(function timeLog(req, res, next) {
 });
 
 router.get('/', function(req, res) {
-  User.getBookings().then(bookings => {
+  Booking.getBookings().then(bookings => {
     res.send(bookings);
   });
 });

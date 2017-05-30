@@ -1,8 +1,8 @@
-var Room = require('./room')
+var db = require('../config/db-config')
 
 module.exports = {
   getRooms: function() {
-    return Room.findAll();
+    return db.Room.findAll();
   },
 
   getRoom: function() {
