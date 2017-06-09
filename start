@@ -1,7 +1,0 @@
--#!/bin/sh
-
- cd /home/ubuntu/dev/bookie_backend
- git pull
- npm install
- pm2 restart all
- exit
