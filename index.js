@@ -21,3 +21,6 @@ app.listen(port, function() {
 app.use('/users', users);
 app.use('/bookings', bookings);
 app.use('/rooms', rooms);
+
+//Jenkins test
+console.log("Automatically built after jenkins integration")
