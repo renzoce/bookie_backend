@@ -3,7 +3,7 @@ var path = require("path");
 var Sequelize = require("sequelize");
 
 var db = {};
-var sequelize = new Sequelize('test', 'root', 'root', {
+var sequelize = new Sequelize('test', 'root', '1234', {
   host: 'localhost',
   dialect: 'mysql',
   pool: {
