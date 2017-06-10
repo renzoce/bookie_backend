@@ -23,4 +23,4 @@ app.use('/bookings', bookings);
 app.use('/rooms', rooms);
 
 //Jenkins test
-console.log("Automatically built after jenkins integration");
+console.log("Automatically built after jenkins integration #2");
