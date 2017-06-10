@@ -13,4 +13,9 @@ router.get('/', function(req, res) {
   });
 });
 
+router.get('/availability', function(req, res) {
+  var response = RehearsalRoom.getMonthAvailabilty();
+  res.send(response);
+});
+
 module.exports = router;
