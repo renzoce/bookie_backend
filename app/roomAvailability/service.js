@@ -1,8 +1,16 @@
-var RoomAvailability = require('./roomAvailability')
+var db = require('../config/db-config')
 
 module.exports = {
   getRoomAvailabilities: function() {
-    return RoomAvailability.findAll();
+    return db.RoomAvailability.findAll();
+  },
+
+  getAvailabilityByRoom: function(roomId) {
+    return db.RoomAvailability.findAll ({
+      where: {
+        rehearsalRoomId: roomId
+      }
+    });
   },
 
   getRoomAvailability: function() {

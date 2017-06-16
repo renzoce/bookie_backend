@@ -3,6 +3,7 @@ var users = require('./app/user/route.js');
 var bookings = require('./app/booking/route.js');
 var rooms = require('./app/room/route.js');
 var rehearsalRooms = require('./app/rehearsalRoom/route.js');
+var roomAvailability = require('./app/roomAvailability/route.js');
 
 var express = require('express');
 var app = express();
@@ -23,6 +24,7 @@ app.use('/users', users);
 app.use('/bookings', bookings);
 app.use('/rooms', rooms);
 app.use('/rehearsalRooms', rehearsalRooms);
+app.use('/roomAvailability', roomAvailability);
 
 //Jenkins test
 console.log("Automatically built after jenkins integration #3");

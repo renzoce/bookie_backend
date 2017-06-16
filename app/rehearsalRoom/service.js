@@ -1,4 +1,9 @@
 var RehearsalRoom = require('./rehearsalRoom')
+var BookingDao = require('../booking/dao.js')
+var RoomAvailability = require('../roomAvailability/service.js');
+
+const PERIOD_LENGTH = 30;
+const MIN_BOOKING_LENGTH = 60; //minutes
 
 module.exports = {
   getRehearsalRooms: function() {
@@ -9,45 +14,89 @@ module.exports = {
     return null;
   },
 
-  getMonthAvailabilty: function(selectedDate) {
+  getAvailabilityByRoom: function(roomId) {
+    let response = [];
+    let initialDate = new Date();
+    let endDate = new Date();
+    endDate.setDate(endDate.getDate() + PERIOD_LENGTH);
 
-    //TODO Chequear si son las 23:59 por ej, y UTC
-    var date = new Date().toLocaleDateString('en-US');
-    var nextDate = new Date();
-    nextDate.setDate(nextDate.getDate() + 1);
-    nextDate = nextDate.toLocaleDateString('en-US');
+    return RoomAvailability.getAvailabilityByRoom(roomId)
+      .then(roomAvailability => {
 
-    var availableDay = new AvailableDay(date);
-    var availableHour = new AvailableHour();
-    availableHour.hour = 13;
-    availableHour.duration = 2;
+        return BookingDao.findBookingsBetweenDates(initialDate, endDate)
+        .then(monthBookings => {
 
-    var availableHour2 = new AvailableHour();
-    availableHour2.hour = 15;
-    availableHour2.duration = 8;
+          for (let i = 0; i < PERIOD_LENGTH; i++) {
 
-    availableDay.availableHours.push(availableHour);
-    availableDay.availableHours.push(availableHour2);
+            let calendarDate = new Date();
+            calendarDate.setDate(initialDate.getDate() + i);
 
-    var availableDay2 = new AvailableDay(nextDate);
-    var availableHour3 = new AvailableHour();
-    availableHour3.hour = 22;
-    availableHour3.duration = 2;
+            let schedule = roomAvailability.filter(function(obj) {
+              return obj.dayNumber == calendarDate.getDay();
+            })[0];
 
-    var availableHour4 = new AvailableHour();
-    availableHour4.hour = 23;
-    availableHour4.duration = 1;
-
-    availableDay2.availableHours.push(availableHour3);
-    availableDay2.availableHours.push(availableHour4);
-
-    var response = [];
-    response.push(availableDay);
-    response.push(availableDay2);
-    return response;
+            if (schedule) {
+              let bookings = getCurrentDayBookings(monthBookings, calendarDate);
+              let availableSlots = getAvailableSlots(calendarDate, schedule, bookings);
+              response = response.concat(availableSlots);
+            }
+          }
+          return response;
+        })
+      })
   }
-};
+}
 
+function getAvailableSlots(calendarDate, schedule, bookings) {
+  let availableSlots = [];
+  let index = 0;
+  let initialTime = schedule.opening;
+  let nextBooking = bookings[index];
+
+  //TODO Chequear si es de madrugada
+  while (schedule.closing - initialTime >= MIN_BOOKING_LENGTH && nextBooking) {
+
+    if (nextBooking.startTime - initialTime >= MIN_BOOKING_LENGTH) {
+      let newSlot = createNewSlot(calendarDate, initialTime, nextBooking.startTime - initialTime);
+      availableSlots.push(newSlot);
+    }
+
+    initialTime = nextBooking.startTime + nextBooking.duration;
+    nextBooking = bookings[index];
+    index++;
+  }
+
+  let availableSlot = createNewSlot(calendarDate, initialTime, schedule.closing - initialTime);
+  availableSlots.push(availableSlot);
+  return availableSlots;
+}
+
+function getCurrentDayBookings(monthBookings, calendarDate) {
+  let bookings = monthBookings.filter(function(obj) {
+    let bookingDate = obj.startDate;
+    return bookingDate.getUTCFullYear() === calendarDate.getUTCFullYear() &&
+      bookingDate.getUTCMonth() === calendarDate.getUTCMonth() &&
+      bookingDate.getUTCDate() === calendarDate.getUTCDate();
+  });
+  return bookings;
+}
+
+function createNewSlot(calendarDate, initialTime, duration) {
+  let availableDay = new AvailableDay(calendarDate.toLocaleDateString('en-US'));
+  let availableHour = new AvailableHour();
+  availableHour.hour = initialTime / 60;
+  availableHour.duration = duration / 60;
+
+  //TODO chequear si es de madrugada
+  /*if (schedule[0].opening > schedule[0].closing) {
+    availableHour.duration = (1440 - schedule[0].opening + schedule[0].closing) / 60;
+  } else {
+    availableHour.duration = (schedule[0].opening - schedule[0].closing) / 60;
+  }*/
+
+  availableDay.availableHours.push(availableHour);
+  return availableDay;
+}
 
 function AvailableDay(date) {
   this.day = date;

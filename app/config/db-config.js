@@ -32,6 +32,13 @@ Object.keys(db).forEach(function(modelName) {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.sequelize.sync();
+db.sequelize.sync()
+/*.then(() => db.Booking.create({
+   duration: 120,
+   startDate: new Date(),
+   startTime: 780,
+   invoiceAmount: 200,
+   description: "Segunda Bookie"
+ }))*/
 
 module.exports = db;

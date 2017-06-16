@@ -11,7 +11,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DOUBLE
     },
     startDate: {
-      type: DataTypes.DATE
+      type: DataTypes.DATEONLY
+    },
+    startTime: {
+      type: DataTypes.INTEGER
     },
     invoiceAmount: {
       type: DataTypes.DOUBLE
@@ -23,8 +26,11 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         Booking.belongsTo(models.Client, {
-          foreignKey: 'userId'
-        });
+            foreignKey: 'userId'
+          }),
+          Booking.belongsTo(models.RehearsalRoom, {
+            foreignKey: 'rehearsalRoomId'
+          });
       }
     }
   });

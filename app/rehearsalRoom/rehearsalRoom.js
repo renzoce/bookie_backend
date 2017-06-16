@@ -47,7 +47,10 @@ module.exports = function(sequelize, DataTypes) {
           }),
           RehearsalRoom.hasMany(models.RoomAvailability, {
             foreignKey: 'rehearsalRoomId'
-          })
+          }),
+          RehearsalRoom.hasMany(models.Booking, {
+            foreignKey: 'rehearsalRoomId'
+          });
       }
     }
   });
