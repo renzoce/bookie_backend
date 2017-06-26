@@ -2,7 +2,7 @@ var RehearsalRoom = require('./rehearsalRoom')
 var BookingDao = require('../booking/dao.js')
 var RoomAvailability = require('../roomAvailability/service.js');
 
-const PERIOD_LENGTH = 30;
+const PERIOD_LENGTH = 30; //days
 const MIN_BOOKING_LENGTH = 60; //minutes
 
 module.exports = {
@@ -15,60 +15,38 @@ module.exports = {
   },
 
   getAvailabilityByRoom: function(roomId) {
-    let response = [];
-    let initialDate = new Date();
+    let response = [];   
     let endDate = new Date();
-    endDate.setDate(endDate.getDate() + PERIOD_LENGTH);
+    var initialDate = new Date();
+    endDate.setDate(initialDate.getDate() + PERIOD_LENGTH);
 
-    return RoomAvailability.getAvailabilityByRoom(roomId)
-      .then(roomAvailability => {
+    return RoomAvailability.getScheduleByRoom(roomId)
+      .then(schedules => {
 
-        return BookingDao.findBookingsBetweenDates(initialDate, endDate)
-        .then(monthBookings => {
+        return BookingDao
+          .findBookingsBetweenDates(initialDate.toISOString(), endDate.toISOString())
+          .then(monthBookings => {
 
-          for (let i = 0; i < PERIOD_LENGTH; i++) {
+            for (let i = 0; i < PERIOD_LENGTH; i++) {
 
-            let calendarDate = new Date();
-            calendarDate.setDate(initialDate.getDate() + i);
+              let calendarDate = new Date();
+              calendarDate.setDate(initialDate.getDate() + i);
+              let availableDay = new AvailableDay(calendarDate.toLocaleDateString('en-US'));
 
-            let schedule = roomAvailability.filter(function(obj) {
-              return obj.dayNumber == calendarDate.getDay();
-            })[0];
+              let schedule = schedules.filter(function(obj) {
+                return obj.dayNumber == calendarDate.getDay();
+              })[0];
 
-            if (schedule) {
-              let bookings = getCurrentDayBookings(monthBookings, calendarDate);
-              let availableSlots = getAvailableSlots(calendarDate, schedule, bookings);
-              response = response.concat(availableSlots);
+              if (schedule) {
+                let bookings = getCurrentDayBookings(monthBookings, calendarDate);
+                let currentDayAvailability = getDayAvailability(schedule, bookings, availableDay);
+                response.push(currentDayAvailability);
+              }
             }
-          }
-          return response;
-        })
+            return response;
+          })
       })
   }
-}
-
-function getAvailableSlots(calendarDate, schedule, bookings) {
-  let availableSlots = [];
-  let index = 0;
-  let initialTime = schedule.opening;
-  let nextBooking = bookings[index];
-
-  //TODO Chequear si es de madrugada
-  while (schedule.closing - initialTime >= MIN_BOOKING_LENGTH && nextBooking) {
-
-    if (nextBooking.startTime - initialTime >= MIN_BOOKING_LENGTH) {
-      let newSlot = createNewSlot(calendarDate, initialTime, nextBooking.startTime - initialTime);
-      availableSlots.push(newSlot);
-    }
-
-    initialTime = nextBooking.startTime + nextBooking.duration;
-    nextBooking = bookings[index];
-    index++;
-  }
-
-  let availableSlot = createNewSlot(calendarDate, initialTime, schedule.closing - initialTime);
-  availableSlots.push(availableSlot);
-  return availableSlots;
 }
 
 function getCurrentDayBookings(monthBookings, calendarDate) {
@@ -81,20 +59,35 @@ function getCurrentDayBookings(monthBookings, calendarDate) {
   return bookings;
 }
 
-function createNewSlot(calendarDate, initialTime, duration) {
-  let availableDay = new AvailableDay(calendarDate.toLocaleDateString('en-US'));
-  let availableHour = new AvailableHour();
-  availableHour.hour = initialTime / 60;
-  availableHour.duration = duration / 60;
+function getDayAvailability(schedule, bookings, availableDay) {
+  let index = 0;
+  let currentTime = schedule.opening;
+  let nextBooking = bookings[index];
 
-  //TODO chequear si es de madrugada
-  /*if (schedule[0].opening > schedule[0].closing) {
-    availableHour.duration = (1440 - schedule[0].opening + schedule[0].closing) / 60;
-  } else {
-    availableHour.duration = (schedule[0].opening - schedule[0].closing) / 60;
-  }*/
+  while (schedule.closing - currentTime >= MIN_BOOKING_LENGTH && nextBooking) {
 
+    if (nextBooking.startTime - currentTime >= MIN_BOOKING_LENGTH) {
+
+      let duration = (nextBooking.startTime - currentTime) / 60;
+      let availableHour = new AvailableHour(currentTime / 60, duration);
+      availableDay.availableHours.push(availableHour);
+
+      //TODO chequear si es de madrugada
+      /*if (schedule[0].opening > schedule[0].closing) {
+        availableHour.duration = (1440 - schedule[0].opening + schedule[0].closing) / 60;
+      } else {
+        availableHour.duration = (schedule[0].opening - schedule[0].closing) / 60;
+      }*/
+    }
+    currentTime = nextBooking.startTime + nextBooking.duration;
+    nextBooking = bookings[index];
+    index++;
+  }
+
+  let duration = (schedule.closing - currentTime) / 60;
+  let availableHour = new AvailableHour(currentTime / 60, duration);
   availableDay.availableHours.push(availableHour);
+
   return availableDay;
 }
 
@@ -103,7 +96,7 @@ function AvailableDay(date) {
   this.availableHours = [];
 }
 
-function AvailableHour() {
-  this.hour = 0;
-  this.duration = 0;
+function AvailableHour(hour, duration) {
+  this.hour = hour;
+  this.duration = duration;
 }

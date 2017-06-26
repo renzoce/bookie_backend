@@ -5,7 +5,7 @@ module.exports = {
     return db.RoomAvailability.findAll();
   },
 
-  getAvailabilityByRoom: function(roomId) {
+  getScheduleByRoom: function(roomId) {
     return db.RoomAvailability.findAll ({
       where: {
         rehearsalRoomId: roomId

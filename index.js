@@ -1,4 +1,5 @@
 var sequelize = require('./app/config/db-config.js');
+var bodyParser = require('body-parser');
 var users = require('./app/user/route.js');
 var bookings = require('./app/booking/route.js');
 var rooms = require('./app/room/route.js');
@@ -15,6 +16,9 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.listen(port, function() {
   console.log('Listening on port ' + port);
