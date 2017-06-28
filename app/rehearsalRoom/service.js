@@ -1,13 +1,14 @@
 var RehearsalRoom = require('./rehearsalRoom')
 var BookingDao = require('../booking/dao.js')
 var RoomAvailability = require('../roomAvailability/service.js');
+var db = require('../config/db-config')
 
 const PERIOD_LENGTH = 30; //days
 const MIN_BOOKING_LENGTH = 60; //minutes
 
 module.exports = {
   getRehearsalRooms: function() {
-    return RehearsalRoom.findAll();
+    return db.RehearsalRoom.findAll();
   },
 
   getRehearsalRoom: function() {
@@ -15,7 +16,7 @@ module.exports = {
   },
 
   getAvailabilityByRoom: function(roomId) {
-    let response = [];   
+    let response = [];
     let endDate = new Date();
     var initialDate = new Date();
     endDate.setDate(initialDate.getDate() + PERIOD_LENGTH);
