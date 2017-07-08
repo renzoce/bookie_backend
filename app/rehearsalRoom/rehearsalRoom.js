@@ -12,9 +12,6 @@ module.exports = function(sequelize, DataTypes) {
     address: {
       type: DataTypes.STRING
     },
-    username: {
-      type: DataTypes.STRING
-    },
     latitude: {
       type: DataTypes.STRING
     },
@@ -24,13 +21,13 @@ module.exports = function(sequelize, DataTypes) {
     phone: {
       type: DataTypes.STRING
     },
-    cellphone: {
+    cellPhone: {
       type: DataTypes.STRING
     },
     mainImgUrl: {
       type: DataTypes.STRING
     },
-    aboutMe: {
+    description: {
       type: DataTypes.STRING
     },
     rating: {
