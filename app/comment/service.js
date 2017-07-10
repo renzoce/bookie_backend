@@ -1,11 +1,3 @@
-var aComment = require('./comment')
+var db = require('../config/db-config')
 
-module.exports = {
-  getComments: function() {
-    return aComment.findAll();
-  },
-
-  getComment: function() {
-    return null;
-  }
-};
+module.exports = {};

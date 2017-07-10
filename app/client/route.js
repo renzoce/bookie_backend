@@ -1,15 +1,29 @@
-var Client = require('./service.js')
+var ClientService = require('./service.js')
+var Client = require('./dao.js')
 var express = require('express');
 var router = express.Router();
 
-router.use(function timeLog(req, res, next) {
-  console.log('Time: ', Date.now())
-  next()
+router.get('/', function(req, res) {
+  Client.findAll().then(response => {
+    res.send(response);
+  });
 });
 
-router.get('/', function(req, res) {
-  User.getClients().then(clients => {
-    res.send(clients);
+router.get('/:clientId', function(req, res) {
+  Client.findById(req.params.clientId).then(response => {
+    res.send(response);
+  });
+});
+
+router.get('/:clientId/bookings', function(req, res) {
+  Client.getClientBookings(req.params.clientId).then(response => {
+    res.send(response);
+  });
+});
+
+router.get('/:clientId/comments', function(req, res) {
+  Client.getClientComments(req.params.clientId).then(response => {
+    res.send(response);
   });
 });
 

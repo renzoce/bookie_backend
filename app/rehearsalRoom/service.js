@@ -7,31 +7,7 @@ const PERIOD_LENGTH = 30; //days
 const MIN_BOOKING_LENGTH = 60; //minutes
 
 module.exports = {
-
-  getRehearsalRooms: function() {
-    return db.RehearsalRoom.findAll();
-  },
-
-  getRehearsalRoom: function(roomId) {
-    return db.RehearsalRoom.findById(roomId);
-  },
-
-  getRehearsalRoomComments: function(roomId) {
-    return db.Comment.findAll({
-      where: {
-        rehearsalRoomId: roomId
-      }
-    });
-  },
-
-  getRehearsalRoomImages: function(roomId) {
-    return db.Image.findAll({
-      where: {
-        rehearsalRoomId: roomId
-      }
-    });
-  },
-
+  
   getAvailabilityByRoom: function(roomId) {
     let response = [];
     let endDate = new Date();

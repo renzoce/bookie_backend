@@ -1,22 +1,23 @@
-var Booking = require('./service.js')
-var Dao = require('./dao.js')
+var BookingService = require('./service.js')
+var Booking = require('./dao.js')
 var express = require('express');
 var router = express.Router();
 
-router.use(function timeLog(req, res, next) {
-  console.log('Time: ', Date.now())
-  next()
+router.get('/', function(req, res) {
+  Booking.findAll().then(response => {
+    res.send(response);
+  });
 });
 
-router.get('/', function(req, res) {
-  Booking.getBookings().then(bookings => {
-    res.send(bookings);
+router.get('/:bookingId', function(req, res) {
+  Booking.findById(req.params.bookingId).then(response => {
+    res.send(response);
   });
 });
 
 router.post('/', function(req, res) {
-  Dao.save(req.body.booking).then(booking => {
-    res.send(booking);
+  Booking.saveBooking(req.body.booking).then(response => {
+    res.send(response);
   })
 });
 

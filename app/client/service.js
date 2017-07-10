@@ -1,11 +1,3 @@
-var Client = require('./client')
+var db = require('../config/db-config')
 
-module.exports = {
-  getClients: function() {
-    return Client.findAll();
-  },
-
-  getClient: function() {
-    return null;
-  }
-};
+module.exports = {};

@@ -1,8 +1,16 @@
 var db = require('../config/db-config')
 
 module.exports = {
+
+  findAll: function() {
+    return db.Booking.findAll();
+  },
+
+  findById: function(bookingId) {
+    return db.Booking.findById(bookingId);
+  },
+
   save: function(booking) {
-    console.log(booking)
     return db.Booking.create(booking);
   },
 

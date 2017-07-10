@@ -1,4 +1,4 @@
-var aComment = require('./service.js')
+var aComment = require('./dao.js')
 var express = require('express');
 var router = express.Router();
 
@@ -8,8 +8,14 @@ router.use(function timeLog(req, res, next) {
 });
 
 router.get('/', function(req, res) {
-  aComment.getComments().then(comments => {
+  aComment.findAll().then(comments => {
     res.send(comments);
+  });
+});
+
+router.get('/:commentId', function(req, res) {
+  aComment.findById(req.params.commentId).then(response => {
+    res.send(response);
   });
 });
 

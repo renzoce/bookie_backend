@@ -32,6 +32,9 @@ module.exports = function(sequelize, DataTypes) {
     },
     rating: {
       type: DataTypes.DOUBLE
+    },
+    pricePerHour: {
+      type: DataTypes.DOUBLE
     }
   }, {
     classMethods: {
