@@ -16,7 +16,7 @@ var sequelize = new Sequelize('test', 'root', '1234', {
 fs
   .readdirSync(__dirname + '/../')
   .filter(function(file) {
-    return (file.indexOf("config") !== 0);
+    return (file.indexOf("config") !== 0 && file.indexOf("auth") !== 0);
   })
   .forEach(function(file) {
     var model = sequelize.import(path.join(__dirname + '/../' + file, file + '.js'));

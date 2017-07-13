@@ -7,10 +7,4 @@ router.use(function timeLog(req, res, next) {
   next()
 });
 
-router.get('/', function(req, res) {
-  User.getUsers().then(users => {
-    res.send(users);
-  });
-});
-
 module.exports = router;

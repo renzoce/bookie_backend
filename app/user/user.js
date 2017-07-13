@@ -14,6 +14,12 @@ module.exports = function(sequelize, DataTypes) {
     },
     isOwner: {
       type: DataTypes.BOOLEAN
+    },
+    password: {
+      type: DataTypes.STRING
+    },
+    salt: {
+      type: DataTypes.STRING
     }
   });
 
